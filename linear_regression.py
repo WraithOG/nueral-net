@@ -1,34 +1,23 @@
 import random
-petal_length = ["3", "2", "4", "3", "3.5", "2", "5.5", "1", "4.5"]
-petal_width = ["1.5", "1", "1.5", "1", ".5", ".5", "1", "1", "1"]
-training_iterations = 100
+import numpy as np
+import matplotlib as plt
 
-
-def loss(guess, y):
-    cost = (1 / len(petal_length)) * ((y - guess) ** 2)
-    return cost
-
-def pred(x, w1, w2):
-    prediction = w1 * x + w2
-    return prediction
-
-def gradient_descent(learning_rate, w1, w2, cost):
-    w1 = w1 - (learning_rate * cost)
-    w2 = w2 - (learning_rate * cost)
-    return w1, w2
-
-def initialize_weights():
-    slope = random.random()
-    intercept = random.random()
-    return slope, intercept
-
-slope, intercept = initialize_weights()
-print(f"w1: {slope}\n w2: {intercept}")
-test_pred = pred(3, slope, intercept)
-print(f"Initial prediction: {test_pred}")
-cost = loss(test_pred, 1.5)
-print(f"Cost: {cost}")
-w1, w2 = gradient_descent(20, slope, intercept, cost=cost)
-print(f"New w1: {w1}\n New w2: {w2}")
-new_pred = pred(3, w1, w2)
-print(f"New pred: {new_pred}")
+training_x = [1, 2, 3, 4, 5, 6, 7, 8]
+training_y = [5, 6.5, 8, 12.5, 14, 15, 18.5, 21]
+learning_rate = .01
+w1 = random.random()
+w2 = random.random()
+mse = 0
+for i in range(100000):
+    random_int = np.random.randint(0, 8)
+    data_x = training_x[random_int]
+    data_y = training_y[random_int]
+    dcdw = 2 * ((w1 * data_x + w2) - data_y) * data_x
+    dcdb = 2 * ((w1 * data_x + w2) - data_y)
+    w1 = w1 - (learning_rate * dcdw)
+    w2 = w2 - (learning_rate * dcdb)
+    pred = w1 * data_x + w2
+    mse = ((pred) - data_y) ** 2
+    mse = mse / len(training_x)
+    if i % 1000 == 0:
+        print(mse)
